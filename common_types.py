@@ -21,6 +21,7 @@ complex_number1 = 1 + 2.2j
 complex_number2 = complex(1 + 2.2j)
 
 # list
+empty_list = []
 array = ["12'\"3", 1, [2.4, 4, 4, 4], 123, 3]
 words = ["one", "two", "three", 120]
 
@@ -31,13 +32,15 @@ tuple3 = 0,
 tuple4 = (0,)
 
 # set - Множество.
+empty_set = set()
 set1 = {1, 2, 2, 2, "2, 2, 3", 4, 5, 6, 7, 8, (9, 10)}
 
 # frozenset - Неизменяемое множество.
+empty_frozenset = frozenset()
 set2 = frozenset({"one", "two", "three"})
 
 # dict - Словарь
-
+empty_dict = {}
 dict1 = {
     "name": "Вася",
     "age": 12,
