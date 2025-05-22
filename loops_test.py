@@ -141,3 +141,44 @@ print(text_parts)
 
 for line in text_parts:
     print("Количество слов в строке:", len(line.split()), "Содержимое строки:", line)
+
+
+# -----------------------------------------
+pos = 1
+stop = 10
+step = 1
+while pos <= stop:
+    print("WHILE Итерация цикла:", pos)
+    pos += step
+
+
+# Проще через цикл for
+for i in range(stop + 1):
+    print("FOR Итерация цикла:", i)
+
+fast_list = list(range(2, 20, 2))
+print(fast_list)
+
+# -----------------------------------------
+# ENUMERATE
+for index, value in enumerate(fast_list):
+    print("Элемент списка:", value, "Индекс:", index)
+
+
+# -----------------------------------------
+
+words = ["Первое слово", 1, "Второе слово", "Третье слово", "Четвертое слово"]
+# Нужно создать новый список, в котором слова будут в нижнем регистре.
+
+for element in words:
+    if not isinstance(element, str):
+        print("Элемент не является строкой:", element, "Выходим из цикла")
+        only_words = False
+        break
+
+# На том же уровне отступов, что и блок for
+else:
+    # Блок else сработает только если в цикле не произошло break.
+    only_words = True
+
+print("Все элементы списка являются строками?", only_words)
