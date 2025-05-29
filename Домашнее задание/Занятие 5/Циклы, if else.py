@@ -4,6 +4,31 @@
 # Используя цикл, вывести в консоль все элементы списка, а их буквы в обратном порядке.
 list1 = ['apple', 'banana', 'cherry']
 
+last_index = len(list1) - 1  # 11
+
+i = last_index
+while i >= 0:
+    print(list1[i])
+    i -= 1  # i = i - 1
+
+
+for i in range(last_index, -1, -1):
+    print(list1[i])
+
+
+for element in list1[::-1]:  # list1[0:last_index:-1]
+    print(element)
+
+
+for element in reversed(list1):
+    print(element)
+
+
+list1.reverse()  # ИЗМЕНЕНИЕ СПИСКА!
+for element in list1:
+    print(element)
+
+
 # Задание 2
 # Используя цикл, вывести в консоль все ключи словаря.
 # Используя цикл, вывести в консоль все ключи и значения словаря.
@@ -13,11 +38,50 @@ dict1 = {
     "city": "New York"
 }
 
+# Используя цикл, вывести в консоль все ключи словаря.
+for key in dict1:
+    print(key)
+
+for key in dict1.keys():
+    print(key)
+
+[print(key) for key in dict1]
+
+# Используя цикл, вывести в консоль все ключи и значения словаря.
+for key, value in dict1.items():
+    print(key, value)
+
+for key in dict1:
+    print(key, dict1[key])
+
+for key in dict1.keys():
+    print(key, dict1[key])
+
 # Задание 3
 # На вход пользователь вводит целое число (использовать функцию input).
 # Используя цикл, вывести в консоль все числа от 1 до введенного числа включительно.
 # Используя цикл, вывести в консоль все числа от введенного числа до 1 включительно.
 # Используя цикл, вывести в консоль все числа от 1 до введенного числа включительно, которые делятся на 3 без остатка.
+
+user_number = int(input('Введите число: '))  # 10
+
+i = 0
+while i <= user_number:
+    print(i)    # 10
+    i += 1      # 11
+
+
+for i in range(1, user_number + 1):
+    print(i)
+
+# Используя цикл, вывести в консоль все числа от введенного числа до 1 включительно.
+for i in range(user_number, 0, -1):
+    print(i)
+
+for i in reversed(range(1, user_number + 1)):
+    if user_number % 3 == 0:
+        print(i)
+
 
 # Задание 4
 # На вход пользователь вводит предложение (использовать функцию input).
@@ -25,6 +89,27 @@ dict1 = {
 # Используя цикл, выведите в консоль все слова предложения в обратном порядке.
 # Используя цикл, создайте словарь, где ключами являются длина слов,
 #           а значениями - список слов в предложении с такой длиной.
+
+user_text = input('Введите предложение: ')
+
+user_words = user_text.split()  # ['Привет', 'мир', 'как', 'дела']
+print(len(user_words))
+
+new_dict = {}
+for word in user_words:
+    length = len(word)  # 5
+
+    words_list = new_dict.get(length)
+    if words_list is None:
+        new_dict[length] = [word]
+    else:
+        words_list.append(word)
+
+new_dict = {}
+for word in user_words:
+    length = len(word)  # 5
+    new_dict.setdefault(length, []).append(word)
+
 
 # Задание 5
 # На вход пользователь должен ввести username, email, имя и фамилию по очереди (использовать функцию input).
