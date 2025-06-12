@@ -40,7 +40,7 @@ dog_white_1 = CatSchema(color="white")  # Создание экземпляра 
 cat_black_1 = CatSchema(color="black", name="Barsik")  # Создание экземпляра класса
 cat_orange_1 = CatSchema(color="orange", name="Murzik", age=5)  # Создание экземпляра класса
 
-print(cat_black_1.tail)
+print(cat_black_1.say)
 
 print(dog_white_1.get_full_stats())
 print(dog_white_1.say())

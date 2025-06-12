@@ -2,7 +2,7 @@ import random
 from abc import ABC, abstractmethod
 
 
-class BaseAnimal(ABC):
+class BaseAnimal(ABC):  # Абстрактный класс, который не может быть использован напрямую
     tail = 1  # Атрибут класса
 
     def __init__(self, color, name, size, age):
@@ -39,8 +39,19 @@ class BaseAnimal(ABC):
     def get_full_stats(self):  # Метод класса
         return f"Цвет: {self.color} | Имя: {self.name} | Возраст: {self.age} | Размер: {self.size}"
 
+class FlyingMixin(ABC):  # Абстрактный класс, который не может быть использован напрямую
+
+    @abstractmethod  # Абстрактный метод, который должен быть переопределен в дочерних классах
+    def fly(self):
+        pass
+
+    def move(self):
+        self.fly()
+
+class BasicActionsMixin(ABC):  # Абстрактный класс, который не может быть использован напрямую
+
     def sleep(self, seconds=1):
-        self.say()
+        print("Спим", self.__class__, "BasicActionsMixin")
         return f"{self.name} спит {seconds} секунд"
 
     @abstractmethod  # Абстрактный метод, который должен быть переопределен в дочерних классах
@@ -56,7 +67,11 @@ class BaseAnimal(ABC):
         pass
 
 
-class Cat(BaseAnimal):  # Наследование класса BaseAnimal
+class Cat(BaseAnimal, BasicActionsMixin):  # Наследование класса BaseAnimal
+
+    def __init__(self, color, name="Tom", size=10, age=1, tail=2):
+        super().__init__(color, name, size, age)
+        self.cat_name = name  # Атрибут экземпляра класса
 
     def eat(self, food):
         pass
@@ -64,16 +79,12 @@ class Cat(BaseAnimal):  # Наследование класса BaseAnimal
     def move(self):
         pass
 
-    def __init__(self, color, name="Tom", size=10, age=1, tail=2):
-        super().__init__(color, name, size, age)
-        self.cat_name = name  # Атрибут экземпляра класса
-
     def say(self):  # Переопределение метода родительского класса BaseAnimal
         super().say()
         return f"{self.name} мяукает"
 
 
-class Dog(BaseAnimal):  # Наследование класса BaseAnimal
+class Dog(BaseAnimal, BasicActionsMixin):  # Наследование класса BaseAnimal
 
     def eat(self, food):
         pass
@@ -85,7 +96,7 @@ class Dog(BaseAnimal):  # Наследование класса BaseAnimal
         return f"{self.name} гавкает"
 
 
-class Fish(BaseAnimal):  # Наследование класса BaseAnimal
+class Fish(BaseAnimal, BasicActionsMixin):  # Наследование класса BaseAnimal
     tail = 2  # Атрибут класса
 
     def move(self):
@@ -98,7 +109,10 @@ class Fish(BaseAnimal):  # Наследование класса BaseAnimal
         return f"{self.name} молчит"
 
 
-class Bird(BaseAnimal):  # Наследование класса BaseAnimal
+class Bird(BaseAnimal, FlyingMixin, BasicActionsMixin):  # Наследование класса BaseAnimal
+
+    def fly(self):
+        print("Летим")
 
     def say(self):
         pass
@@ -106,22 +120,10 @@ class Bird(BaseAnimal):  # Наследование класса BaseAnimal
     def eat(self, food):
         pass
 
-    def move(self):
-        pass
 
 
-dog_white_1 = Cat(color="white")  # Создание экземпляра класса
-cat_black_1 = Cat(color="black", name="Barsik")  # Создание экземпляра класса
-cat_orange_1 = Cat(color="orange", name="Murzik", age=5)  # Создание экземпляра класса
+bird1 = Bird("Red", "Bird1", 10, 1)
+bird1.sleep(1)
 
-# print(cat_orange_1)
-
-print(cat_black_1.get_dna())
-# cat_black_1.set_dna("Atg")
-cat_black_1.dna = "345"
-print(cat_black_1.dna)
-
-# print(cat_orange_1)  # Не используйте так, пожалуйста! (Хак приватных атрибутов)
-
-# print(dog_white_1.get_full_stats())
-print(dog_white_1.say())
+bird1.fly()
+bird1.move()
