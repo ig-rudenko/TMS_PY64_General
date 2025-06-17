@@ -43,6 +43,7 @@ class Student(Person):
         except ValueError:
             pass
 
+
 class Subject:
     def __init__(self, subject_name, time):
         self.subject_name = subject_name
@@ -75,6 +76,7 @@ class Group:
             self.__students.remove(student)
         except ValueError:
             pass
+
 
 python_group = Group("Python11")
 
