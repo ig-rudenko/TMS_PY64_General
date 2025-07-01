@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
 
-from app.storages.memory import NotesMemoryStorage
-from app.types import Note
+from ..storages.memory import NotesMemoryStorage
+from ..types import NoteSchema
 
 
 class NotesJSONFileStorage(NotesMemoryStorage):
@@ -13,16 +13,16 @@ class NotesJSONFileStorage(NotesMemoryStorage):
 
     def __load(self) -> None:
         try:
-            with open(self._file_path, 'r', encoding='utf-8') as file:
-                self._notes = [Note(**data) for data in json.load(file)]
+            with open(self._file_path, "r", encoding="utf-8") as file:
+                self._notes = [NoteSchema(**data) for data in json.load(file)]
         except FileNotFoundError:
             Path(self._file_path).touch()
 
     def __save(self) -> None:
-        with open(self._file_path, 'w', encoding='utf-8') as file:
+        with open(self._file_path, "w", encoding="utf-8") as file:
             json.dump([note.__dict__ for note in self._notes], file, ensure_ascii=False)
 
-    def add_note(self, note: Note) -> None:
+    def add_note(self, note: NoteSchema) -> None:
         super().add_note(note)
         self.__save()
 

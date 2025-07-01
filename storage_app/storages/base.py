@@ -1,13 +1,12 @@
 from abc import ABC, abstractmethod
 
-from app.types import Note
+from ..types import NoteSchema
 
 
 class AbstractStorage(ABC):
 
-
     @abstractmethod
-    def add_note(self, note: Note) -> None:
+    def add_note(self, note: NoteSchema) -> None:
         pass
 
     @abstractmethod

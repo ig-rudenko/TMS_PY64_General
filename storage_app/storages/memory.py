@@ -1,13 +1,13 @@
 from .base import AbstractStorage
-from ..types import Note
+from ..types import NoteSchema
 
 
 class NotesMemoryStorage(AbstractStorage):
 
     def __init__(self):
-        self._notes: list[Note] = []
+        self._notes: list[NoteSchema] = []
 
-    def add_note(self, note: Note) -> None:
+    def add_note(self, note: NoteSchema) -> None:
         note.id_ = len(self._notes) + 1
         self._notes.append(note)
 
@@ -20,9 +20,9 @@ class NotesMemoryStorage(AbstractStorage):
 
     def get_all_notes_verbose(self) -> str:
         if not self._notes:
-            return 'Нет заметок!'
+            return "Нет заметок!"
 
-        text = 'Все заметки:'
+        text = "Все заметки:"
         for note in self._notes:
             text += f"""
     Заметка №{note.id_}:
