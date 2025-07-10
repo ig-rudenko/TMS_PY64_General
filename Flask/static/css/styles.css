@@ -1,0 +1,17 @@
+td, th {
+    padding: 5px 10px;
+    border: 1px solid #adadad;
+    margin: 5px;
+}
+
+tr:hover {
+    background-color: #dddddd;
+}
+
+.error {
+    color: #c24949;
+    background-color: #ffbfbf;
+    padding: 5px 10px;
+    border: 1px solid #ff3e3e;
+    border-radius: 5px;
+}

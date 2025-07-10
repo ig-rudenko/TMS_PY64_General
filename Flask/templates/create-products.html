@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}
+Добавление товара
+{% endblock %}
+
+{% block content %}
+<h1 style="text-align: center">Создание товара</h1>
+
+<form method="post">
+
+
+    <div>
+        <label for="product-name" class="form-label">Название товара</label>
+        <input type="text" id="product-name" name="product-name" value="{{ product_name }}" class="form-control">
+        {% if errors and errors.get('product-name') %}
+            <div class="form-text alert alert-danger" role="alert">
+                {{ errors['product-name'] }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="count" class="form-label">Кол-во продукта</label>
+        <input type="number" min="0" id="count" name="count" value="{{ count }}" class="form-control">
+        {% if errors and errors.get('count') %}
+            <div class="form-text alert alert-danger" role="alert">
+                {{ errors['count'] }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <label for="price" class="form-label">Цена продукта</label>
+        <input type="number" min="0" id="price" name="price" value="{{ price }}" class="form-control">
+        {% if errors and errors.get('price') %}
+            <div class="form-text alert alert-danger" role="alert">
+                {{ errors['price'] }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-outline-success">Создать</button>
+    </div>
+
+</form>
+{% endblock %}
