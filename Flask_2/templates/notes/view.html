@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{% block title %} {{ note.title }} {% endblock %}</h2>
+    <span class="badge badge-primary">{{ note.created_at }}</span>
+
+    <a href="{{ url_for('notes.edit_note', note_id=note.id) }}">
+        <span class="badge badge-primary" style="color: white">Edit</span>
+    </a>
+
+    <p>{{ note.content }}</p>
+{% endblock %}

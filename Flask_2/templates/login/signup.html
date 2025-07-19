@@ -1,0 +1,55 @@
+{% extends "login/base.html" %}
+
+{% block content %}
+    <div class="column is-4 is-offset-4">
+        <h3 class="title">Sign Up</h3>
+        <div class="box">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="notification is-danger">
+                        {{ messages[0] }}. <br> Go to <a href="{{ url_for('auth.login') }}">login page</a>.
+                    </div>
+                {% endif %}
+            {% endwith %}
+            <form method="POST" action="/register">
+                {{ form.hidden_tag() }}
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="email" name="email"
+                               value="{{ form.email.data or '' }}" placeholder="Email" autofocus="">
+                        {% if form.email.errors %}
+                            {% for error in form.email.errors %}
+                                <p class="help is-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="text" name="username"
+                               value="{{ form.username.data or '' }}" placeholder="Name" autofocus="">
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                                <p class="help is-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <input class="input is-large" type="password" name="password" placeholder="Password">
+                        {% if form.password.errors %}
+                            {% for error in form.password.errors %}
+                                <p class="help is-danger">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <input type="submit" name="submit" class="button is-block is-info is-large is-fullwidth" value="Sign Up">
+            </form>
+        </div>
+    </div>
+{% endblock %}

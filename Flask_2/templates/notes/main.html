@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Главная страница
+{% endblock %}
+
+{% block content %}
+
+    {% for note in notes %}
+        <a href="{{ url_for('notes.view_note', note_id=note.id) }}">
+            <h2>{{ note.title }}</h2>
+        </a>
+        <span class="badge badge-primary">{{ note.created_at }}</span>
+        <hr>
+    {% endfor %}
+{% endblock %}
