@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container pt-5 d-flex flex-column align-items-center justify-content-center">
+        <h1>Create Note</h1>
+        <div class="w-100 d-flex justify-content-center">
+            <form method="post" style="max-width: 700px" class="w-100" enctype="multipart/form-data">
+            <div class="w-100">
+                {% crispy form 'bootstrap5' %}
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </div>
+        </form>
+        </div>
+    </div>
+{% endblock %}
