@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+                {% for note in notes %}
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <a href="{% url 'note-view' note.id %}">
+                                <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
+                                     height="225"
+                                     preserveAspectRatio="xMidYMid slice" role="img" width="100%"
+                                     xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title>
+                                    <rect width="100%" height="100%" fill="#55595c"></rect>
+                                    <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                                </svg>
+                            </a>
+                            <div class="card-body">
+                                <a class="card-text text-decoration-none text-black" style="font-size: 2rem;" href="{% url 'note-view' note.id %}">
+                                    {{ note.title }}
+                                </a>
+                                <div class="d-flex justify-content-between align-items-center pt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <small class="text-body-secondary">{{ note.created_at }}</small></div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
