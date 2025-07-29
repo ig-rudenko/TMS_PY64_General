@@ -1,0 +1,9 @@
+{% load crispy_forms_tags %}
+
+<form action="{% url 'post-add-comment' post.id %}" method="post">
+    {% csrf_token %}
+    <div>
+        {% crispy comment_form 'bootstrap5' %}
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </div>
+</form>

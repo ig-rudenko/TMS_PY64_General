@@ -1,0 +1,17 @@
+<div class="my-3 p-3 bg-body rounded shadow-sm">
+    <h6 class="border-bottom pb-2 mb-0">Комментарии</h6>
+
+    {% for comment in comments %}
+        <div id="comment-{{ comment.id }}" class="d-flex flex-row align-items-start text-body-secondary pt-4">
+            <div class="d-flex align-items-center gap-2 pe-3">
+                <img src="https://ui-avatars.com/api/?size=40&name={{ comment.owner }}&font-size=0.33&background=random&rounded=true"
+                     alt="">
+            </div>
+            <div class="pb-1 mb-0 small border-bottom">
+                <strong class="d-block text-gray-dark">@{{ comment.owner }}</strong>
+                <div>{{ comment.text | linebreaks }}</div>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <div class="container pt-5 d-flex justify-content-center align-items-center flex-column">
+        <h1 class="pb-4">Регистрация</h1>
+        <form method="post" action="{% url 'register' %}" style="max-width: 560px" class="w-100 ">
+            {% crispy form 'bootstrap5' %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% endblock %}
