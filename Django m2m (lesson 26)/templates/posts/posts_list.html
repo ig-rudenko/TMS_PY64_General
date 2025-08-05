@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+            <h2>Posts</h2>
+
+            {% include 'posts/posts_filter_form.html' with authors=all_users_list tags=all_tags_list %}
+
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-3">
+
+                {% for post in posts %}
+                    <div class="col">
+                        <div class="card shadow-sm h-100">
+                            <a href="{% url 'post-view' post.id %}">
+                                {% if post.image %}
+                                    <div class="d-flex justify-content-center">
+                                        <img src="{{ post.image.url }}" style="max-height: 200px"
+                                             class="img-fluid rounded" alt="{{ post.title }}">
+                                    </div>
+                                {% else %}
+                                    <svg aria-label="Placeholder: Thumbnail" class="bd-placeholder-img card-img-top"
+                                         height="225"
+                                         preserveAspectRatio="xMidYMid slice" role="img" width="100%"
+                                         xmlns="http://www.w3.org/2000/svg"><title>Placeholder</title>
+                                        <rect width="100%" height="100%" fill="#55595c"></rect>
+                                        <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
+                                    </svg>
+                                {% endif %}
+                            </a>
+
+                            <div class="card-body">
+                                <a class="card-text text-decoration-none text-black"
+                                   href="{% url 'post-view' post.id %}">
+                                </a>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img src="https://ui-avatars.com/api/?size=24&name={{ post.owner }}&font-size=0.52&background=random&rounded=true"
+                                         alt="">
+                                    <span style="font-family: monospace;">{{ post.owner }}</span>
+                                </div>
+                                <div>
+                                    {% for tag in post.tags.all %}
+                                        <a href="{{ request.path }}?tags={{ tag }}" class="badge bg-primary text-decoration-none">{{ tag }}</a>
+                                    {% endfor %}
+                                </div>
+                                <div style="font-size: 2rem;">{{ post.title }}</div>
+                                <div class="d-flex justify-content-between align-items-center pt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                    <small class="text-body-secondary">{{ post.created_at }}</small></div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
