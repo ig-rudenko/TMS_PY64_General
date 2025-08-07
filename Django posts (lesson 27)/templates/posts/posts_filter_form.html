@@ -1,0 +1,45 @@
+<form method="get" class="w-100 pb-3">
+    <div class="row pb-2">
+
+        <div class="col-11">
+            <input type="text" value="{{ request.GET.search }}" name="search" class="w-100 form-control"
+                   placeholder="Поиск">
+        </div>
+
+        <div class="col-1">
+            <button type="submit" class="btn btn-primary">Поиск</button>
+        </div>
+
+    </div>
+
+    <p class="d-inline-flex gap-1">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#posts-filters"
+                aria-expanded="false" aria-controls="posts-filters">
+            Фильтры
+        </button>
+    </p>
+    <div class="collapse" id="posts-filters">
+        <div class="row">
+
+            <div class="col-4">
+                <select class="form-select" name="user">
+                    <option {% if not request.GET.user %} selected {% endif %} value="">Авторы</option>
+
+                    {% for author in authors %}
+                        <option {% if request.GET.user == author %} selected {% endif %}
+                                                                    value="{{ author }}">{{ author }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4">
+                <select name="tags" class="form-select" multiple>
+                    {% for tag in tags %}
+                        <option {% if tag.name == request.GET.tags %} selected {% endif %}
+                                                                 value="{{ tag }}">{{ tag }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+</form>
