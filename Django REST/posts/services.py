@@ -35,7 +35,9 @@ def get_posts_list(
     return qs
 
 
-def add_tags_to_post(post: Post, tags: QuerySet[Tag], new_tags: list[str] | None = None) -> Post:
+def add_tags_to_post(
+    post: Post, tags: QuerySet[Tag] | None = None, new_tags: list[str] | None = None
+) -> Post:
     """
     Добавляет теги к посту. Создает новые теги, если они не существуют.
     :param post: Существующая модель поста.
@@ -58,8 +60,8 @@ def create_post(
     title: str,
     content: str,
     user: User,
-    image: UploadedFile | str,
-    tags: QuerySet[Tag],
+    image: UploadedFile | str | None,
+    tags: QuerySet[Tag] | None = None,
     new_tags: list[str] | None = None,
 ) -> Post:
 

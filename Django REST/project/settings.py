@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "rest_framework",
+    "django_filters",
     "rest_framework.authtoken",
     "djoser",
     "rest_framework_simplejwt.token_blacklist",
@@ -183,9 +184,9 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 25,
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "accounting.authentication.CustomTokenAuthentication",  # Свой класс аутентификации
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         # "rest_framework.authentication.TokenAuthentication",  # Стандартная аутентификация
-        "accounting.authentication.CustomTokenAuthentication",  # Свой класс аутентификации
         "rest_framework.authentication.SessionAuthentication",
         # "rest_framework.authentication.BasicAuthentication",
     ],
