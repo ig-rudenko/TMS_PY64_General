@@ -17,4 +17,5 @@ dependencies = [
     "markdown>=3.8.2",
     "pillow>=11.3.0",
     "psycopg2>=2.9.10",
+    "redis>=6.4.0",
 ]

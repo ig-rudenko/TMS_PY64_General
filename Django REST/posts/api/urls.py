@@ -5,6 +5,7 @@ from posts.api.views import (
     PostDetailAPIView,
     CommentListCreateAPIView,
     CommentDetailAPIView,
+    ImageUploadAPIView,
 )
 
 # /api/v1/
@@ -14,4 +15,5 @@ urlpatterns = [
     path("posts/<int:id>", PostDetailAPIView.as_view()),
     path("comments", CommentListCreateAPIView.as_view()),
     path("comments/<int:id>", CommentDetailAPIView.as_view()),
+    path("upload/image", ImageUploadAPIView.as_view(), name="image-upload"),
 ]

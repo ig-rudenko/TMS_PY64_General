@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from rest_framework import serializers
 
 from posts.models import Post, Tag, Comment
@@ -9,6 +10,7 @@ User = get_user_model()
 class PostSerializer(serializers.ModelSerializer):
     owner = serializers.CharField(source="owner.username", read_only=True)
     new_tags = serializers.ListField(child=serializers.CharField(), required=False, write_only=True)
+    image = serializers.CharField(max_length=512, required=False, allow_null=True)
 
     class Meta:
         model = Post
@@ -50,3 +52,58 @@ class PostDetailSerializer(serializers.ModelSerializer):
         model = Post
         fields = ["id", "title", "content", "image", "created_at", "updated_at", "owner", "tags_list"]
         read_only_fields = ["id", "created_at", "updated_at", "owner"]
+
+
+class PostWithViewsCountSerializer(PostDetailSerializer):
+    """
+    Сериализатор для детального представления поста с количеством просмотров.
+    """
+
+    views_count = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "title",
+            "content",
+            "image",
+            "created_at",
+            "updated_at",
+            "owner",
+            "tags_list",
+            "views_count",
+        ]
+        read_only_fields = ["id", "created_at", "updated_at", "owner"]
+
+    def get_views_count(self, obj) -> int:
+        """
+        Возвращает количество просмотров поста из кэша.
+
+        Использует метод `get_cache_key` из контекста представления (view), чтобы получить уникальный ключ кэша
+        для подсчёта просмотров конкретного поста. Если метод доступен и вызываем, то извлекает значение из кэша.
+        Если метод отсутствует — возвращает 0.
+        """
+        # Проверяем, есть ли в контексте сериализатора объект view
+        # и есть ли у него метод get_cache_key(), который можно вызвать
+        if hasattr(self.context.get("view", {}), "get_cache_key") and callable(
+            self.context["view"].get_cache_key
+        ):
+            # Получаем уникальный ключ кэша для подсчёта просмотров конкретного поста
+            cache_key = self.context["view"].get_cache_key()
+
+            # Извлекаем количество просмотров из кэша. Если ключ не существует, возвращаем 0
+            return cache.get(cache_key, default=0)
+
+        # Если метод get_cache_key() отсутствует в view, возвращаем 0 как значение по умолчанию
+        return 0
+
+
+class ImageUploadSerializer(serializers.Serializer):
+    image = serializers.ImageField(write_only=True)
+    image_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_image_url(self, obj):
+        if obj.image:
+            return obj.image.url
+        return None

@@ -23,7 +23,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     owner = models.ForeignKey(User, on_delete=models.RESTRICT)
-    image = models.ImageField(upload_to="%Y/%m/%d", null=True, blank=True)
+    image = models.ImageField(upload_to="%Y/%m/%d", null=True, blank=True, max_length=512)
 
     tags = models.ManyToManyField(Tag, verbose_name="Теги", blank=True)
 
