@@ -15,11 +15,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from debug_toolbar.toolbar import debug_toolbar_urls
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from debug_toolbar.toolbar import debug_toolbar_urls
+from djoser.views import TokenCreateView, TokenDestroyView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from posts.views import PostsListView
@@ -29,11 +30,12 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounting/", include("accounting.urls")),
     path("posts/", include("posts.urls")),
-    path("api/v1/", include("posts.api.urls")),
-    path("api/auth/", include("djoser.urls.authtoken")),
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    path("api/v1/", include("posts.api.urls", namespace="api")),
+    path("api/auth/token/login", TokenCreateView.as_view(), name="token-create"),
+    path("api/auth/token/logout", TokenDestroyView.as_view(), name="token-destroy"),
+    path("api/token/", TokenObtainPairView.as_view(), name="jwt-obtain-pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="jwt-refresh"),
+    path("api/token/verify/", TokenVerifyView.as_view(), name="jwt-verify"),
 ]
 
 if settings.DEBUG:

@@ -1,12 +1,13 @@
 from django import forms
 
-from posts.models import Post, Comment, User, Tag
+from posts.models import Post, Comment, Tag
 
 
 class PostForm(forms.ModelForm):
     new_tags = forms.CharField(
         max_length=128, required=False, label="Новые теги", help_text="Введите через запятую"
     )
+    title = forms.CharField(min_length=5, max_length=100, label="Заголовок")
 
     class Meta:
         model = Post

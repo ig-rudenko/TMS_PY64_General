@@ -18,6 +18,7 @@ from .serializers import (
     PostWithViewsCountSerializer,
     ImageUploadSerializer,
 )
+from .throttling import CommentThrottle
 from ..models import Post, Comment
 
 
@@ -180,6 +181,11 @@ class CommentListCreateAPIView(ListCreateAPIView):
     queryset = Comment.objects.all().select_related("owner")
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = CommentFilter
+
+    def get_throttles(self):
+        if self.request.method == "POST":
+            return [CommentThrottle()]
+        return []
 
     def perform_create(self, serializer):
         """

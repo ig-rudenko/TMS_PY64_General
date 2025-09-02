@@ -10,8 +10,10 @@ from posts.api.views import (
 
 # /api/v1/
 
+app_name = "api"
+
 urlpatterns = [
-    path("posts", PostListCreateAPIView.as_view(), name="posts-list"),
+    path("posts", PostListCreateAPIView.as_view(), name="posts-list-create"),
     path("posts/<int:id>", PostDetailAPIView.as_view()),
     path("comments", CommentListCreateAPIView.as_view()),
     path("comments/<int:id>", CommentDetailAPIView.as_view()),
