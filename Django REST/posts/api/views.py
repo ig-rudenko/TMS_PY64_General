@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from posts.services import create_post
+from .docs.schemas import image_upload_doc_schema
 from .filters import PostFilter, CommentFilter
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (
@@ -217,6 +218,7 @@ class ImageUploadAPIView(APIView):
     serializer_class = ImageUploadSerializer
     permission_classes = [IsAuthenticated]
 
+    @image_upload_doc_schema
     def post(self, request, *args, **kwargs):
         """
         Обрабатывает POST-запрос, загружает изображение и сохраняет его в хранилище.

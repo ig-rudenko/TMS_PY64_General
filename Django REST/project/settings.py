@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
 
@@ -21,10 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-9du2x+c*=62+-58te$+8_60rv8m!ti74opb%l98&@8fjkq-2%y"
+SECRET_KEY = os.getenv("DJANGO_SECRET", "django-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DJANGO_DEBUG", "yes").lower() in ("yes", "true", "on", "1")
+ENV = os.getenv("DJANGO_ENV", "dev")
 
 ALLOWED_HOSTS = ["*"]
 INTERNAL_IPS = ["127.0.0.1"]
@@ -48,6 +50,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "djoser",
     "rest_framework_simplejwt.token_blacklist",
+    "drf_spectacular",
 ]
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
@@ -93,11 +96,11 @@ SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django-test",
-        "USER": "django",
-        "PASSWORD": "password",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": os.getenv("DB_NAME", "django-test"),
+        "USER": os.getenv("DB_USER", "django"),
+        "PASSWORD": os.getenv("DB_PASSWORD", "password"),
+        "HOST": os.getenv("DB_HOST", "127.0.0.1"),
+        "PORT": os.getenv("DB_PORT", 5432),
     }
     # "default": {
     #     "ENGINE": "django.db.backends.sqlite3",
@@ -108,8 +111,8 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/0",
-        "KEY_PREFIX": "dev",
+        "LOCATION": os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0"),
+        "KEY_PREFIX": ENV,
     }
 }
 
@@ -205,7 +208,24 @@ REST_FRAMEWORK = {
         # "rest_framework.authentication.BasicAuthentication",
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "comment": "10/min",  # лимит только для CommentThrottle
+        "comment": os.getenv("DRF_THROTTLE_COMMENT", "10/min"),  # лимит только для CommentThrottle
+    },
+    "DEFAULT_SCHEMA_CLASS": "project.swagger.MyAutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Your Project API",
+    "DESCRIPTION": "Your project description",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+}
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+        }
     },
 }
 
@@ -214,8 +234,8 @@ DJOSER = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=14),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("DJANGO_ACCESS_TOKEN_LIFETIME", 5))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("DJANGO_REFRESH_TOKEN_LIFETIME", 14))),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": False,
@@ -227,7 +247,7 @@ SIMPLE_JWT = {
     "JSON_ENCODER": None,
     "JWK_URL": None,
     "LEEWAY": 0,
-    "AUTH_HEADER_TYPES": ("Bearer", "Token"),
+    "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",

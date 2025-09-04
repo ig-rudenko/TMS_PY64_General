@@ -101,9 +101,3 @@ class PostWithViewsCountSerializer(PostDetailSerializer):
 
 class ImageUploadSerializer(serializers.Serializer):
     image = serializers.ImageField(write_only=True)
-    image_url = serializers.SerializerMethodField(read_only=True)
-
-    def get_image_url(self, obj):
-        if obj.image:
-            return obj.image.url
-        return None
