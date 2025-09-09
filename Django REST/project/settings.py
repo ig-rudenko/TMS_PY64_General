@@ -266,3 +266,17 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+# ---------------------------------------- CELERY ----------------------------------------
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/1")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/2")
+CELERY_TASK_ROUTES = {
+    "posts.tasks.*": {"queue": "posts"},
+}
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TASK_ALWAYS_EAGER = ENV == "dev"
+CELERY_TIME_LIMIT = 60 * 60
+CELERY_WORKER_MAX_MEMORY_PER_CHILD = 1024 * 1024 * 300  # 300 MB

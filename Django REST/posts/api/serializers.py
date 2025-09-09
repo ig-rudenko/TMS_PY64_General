@@ -101,3 +101,16 @@ class PostWithViewsCountSerializer(PostDetailSerializer):
 
 class ImageUploadSerializer(serializers.Serializer):
     image = serializers.ImageField(write_only=True)
+
+
+class AsyncTaskSerializer(serializers.Serializer):
+    class Meta:
+        fields = ["task_id", "state"]
+        read_only_fields = ["task_id", "state"]
+
+
+class AsyncTaskResultSerializer(serializers.Serializer):
+    task_id = serializers.UUIDField(required=True)
+
+    class Meta:
+        fields = ["task_id"]

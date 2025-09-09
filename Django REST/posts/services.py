@@ -4,6 +4,7 @@ from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 
 from posts.models import Post, Comment, Tag
+from posts.tasks import common_shared_task
 
 User = get_user_model()  # Возвращает модель пользователя текущего проекта.
 
@@ -69,6 +70,12 @@ def create_post(
         post = Post.objects.create(title=title, content=content, owner=user, image=image)
 
         post = add_tags_to_post(post, tags, new_tags)
+
+    # Добавление в очередь задачи на выполнение функции common_shared_task
+    # с аргументами "post_created" и `post.title`
+    task = common_shared_task.delay("post_created", post.title)
+    print(type(task), task.id, task)
+
     return post
 
 

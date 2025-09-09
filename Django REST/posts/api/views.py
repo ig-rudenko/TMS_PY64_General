@@ -1,10 +1,11 @@
 from datetime import datetime
 
+from celery.result import AsyncResult
 from django.core.cache import cache
 from django.core.files.storage import default_storage
 from django_filters import rest_framework as filters
 from rest_framework import status
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,9 +19,12 @@ from .serializers import (
     CommentSerializer,
     PostWithViewsCountSerializer,
     ImageUploadSerializer,
+    AsyncTaskSerializer,
+    AsyncTaskResultSerializer,
 )
 from .throttling import CommentThrottle
 from ..models import Post, Comment
+from ..tasks import char_count_posts
 
 
 class PostListCreateAPIView(ListCreateAPIView):
@@ -241,3 +245,35 @@ class ImageUploadAPIView(APIView):
 
         # Возвращаем ответ с путём сохранённого изображения и статусом 201 Created
         return Response({"image_path": image_path}, status=status.HTTP_201_CREATED)
+
+
+class CharCounterAPIView(GenericAPIView):
+    serializer_class = AsyncTaskSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = (filters.DjangoFilterBackend,)  # Используется фильтрация по параметрам.
+    filterset_class = PostFilter  # Класс фильтрации для постов.
+    queryset = Post.objects.all()  # Набор всех постов с предзагрузкой владельца.
+
+    def get(self, request, *args, **kwargs):
+        # owner=username&owner=username12&search=123 -> self.request.GET
+        # self.request.GET -> ImmutableQueryDict
+        # **self.request.GET -> owner=['username', 'username12'], search=['123']
+        task = char_count_posts.apply_async(kwargs=self.request.GET.dict())
+        return Response({"task_id": task.task_id, "state": task.state}, status=status.HTTP_202_ACCEPTED)
+
+
+class TaskResultAPIView(GenericAPIView):
+    serializer_class = AsyncTaskResultSerializer
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        task = AsyncResult(str(serializer.validated_data["task_id"]))
+        if task.state == "SUCCESS":
+            if task.result:
+                return Response({"result": task.result}, status=status.HTTP_200_OK)
+            return Response({"result": "No result"}, status=status.HTTP_200_OK)
+
+        return Response({"result": f"Task is {task.state}"}, status=status.HTTP_200_OK)

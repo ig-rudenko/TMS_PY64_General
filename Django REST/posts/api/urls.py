@@ -6,6 +6,8 @@ from posts.api.views import (
     CommentListCreateAPIView,
     CommentDetailAPIView,
     ImageUploadAPIView,
+    CharCounterAPIView,
+    TaskResultAPIView,
 )
 
 # /api/v1/
@@ -18,4 +20,6 @@ urlpatterns = [
     path("comments", CommentListCreateAPIView.as_view()),
     path("comments/<int:id>", CommentDetailAPIView.as_view()),
     path("upload/image", ImageUploadAPIView.as_view(), name="image-upload"),
+    path("tasks/char-counter", CharCounterAPIView.as_view(), name="char-counter"),
+    path("tasks/results", TaskResultAPIView.as_view(), name="task-result"),
 ]
