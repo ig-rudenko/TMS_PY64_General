@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt.token_blacklist",
     "drf_spectacular",
+    "django_celery_beat",
 ]
 if DEBUG:
     INSTALLED_APPS += ["debug_toolbar"]
@@ -270,13 +271,44 @@ SIMPLE_JWT = {
 
 # ---------------------------------------- CELERY ----------------------------------------
 
+# Брокер сообщений: Используется Redis для распределения задач между воркерами.
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://127.0.0.1:6379/1")
+
+# Результаты задач: Сохраняются в отдельной Redis-базе.
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", "redis://127.0.0.1:6379/2")
+
+# Маршрутизация задач:
 CELERY_TASK_ROUTES = {
-    "posts.tasks.*": {"queue": "posts"},
+    "posts.tasks.*": {"queue": "posts"},  # Задачи из модуля posts.tasks направляются в очередь posts.
 }
+
+# Используется JSON для передачи данных задач и их результатов.
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_TASK_ALWAYS_EAGER = ENV == "dev"
+
+# В режиме разработки (dev) задачи выполняются немедленно, что удобно для отладки.
+# CELERY_TASK_ALWAYS_EAGER = ENV == "dev"
+
+# Установлены таймауты и ограничения памяти для воркеров, чтобы избежать утечек ресурсов.
 CELERY_TIME_LIMIT = 60 * 60
 CELERY_WORKER_MAX_MEMORY_PER_CHILD = 1024 * 1024 * 300  # 300 MB
+
+# CELERY_BEAT_SCHEDULE = {
+#     "send-mail": {
+#         "task": "posts.tasks.send_mail",
+#         "schedule": 10,
+#     },
+# }
+
+
+# ============================================ EMAIL ===========================================
+EMAIL_HOST = "smtp.yandex.ru"
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.getenv("EMAIL_USER", "")
+EMAIL_ADS_HOST_USER = os.getenv("EMAIL_ADS_USER", EMAIL_HOST_USER)
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASSWORD", "")
+
+
+print(EMAIL_HOST_USER, EMAIL_HOST_PASSWORD)
