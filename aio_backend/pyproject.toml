@@ -1,0 +1,21 @@
+[project]
+name = "aio-backend"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.12.15",
+    "aiosqlite>=0.21.0",
+    "alembic>=1.16.5",
+    "fastapi>=0.117.1",
+    "passlib>=1.7.4",
+    "pydantic-settings>=2.10.1",
+    "pydantic[email]>=2.11.9",
+    "sqlalchemy>=2.0.43",
+    "uvicorn>=0.37.0",
+]
+
+[dependency-groups]
+dev = [
+    "faker>=37.8.0",
+]
