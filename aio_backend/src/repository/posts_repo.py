@@ -1,14 +1,33 @@
 from faker import Faker
 
-from src.dto.posts import PostDTO
+from src.dto.posts import PostDTO, PostCreateDTO
+from src.repository.abstract import AbstractPostRepository
 
 
-class FakePostsRepository:
+class FakePostsRepository(AbstractPostRepository):
 
     def __init__(self, language="en_US"):
         self.fake = Faker(language=language)
 
-    async def get_posts(self) -> list[PostDTO]:
+    async def get(self, post_id: int) -> PostDTO:
+        return PostDTO(
+            id=post_id,
+            title=self.fake.sentence(),
+            content=self.fake.paragraph(50),
+            created_at=self.fake.date_time(),
+            author=self.fake.name(),
+        )
+
+    async def create(self, instance: PostCreateDTO) -> PostDTO:
+        return PostDTO(
+            id=self.fake.random_int(),
+            title=instance.title,
+            content=instance.content,
+            created_at=self.fake.date_time(),
+            author=self.fake.name(),
+        )
+
+    async def get_list(self, search: str = "") -> list[PostDTO]:
         return [
             PostDTO(
                 id=i,
@@ -20,20 +39,12 @@ class FakePostsRepository:
             for i in range(20)
         ]
 
-    async def get_post(self, post_id) -> PostDTO:
-        return PostDTO(
-            id=post_id,
-            title=self.fake.sentence(),
-            content=self.fake.paragraph(50),
-            created_at=self.fake.date_time(),
-            author=self.fake.name(),
-        )
+    async def update(self, instance: PostDTO) -> PostDTO:
+        return instance
 
-    async def create_post(self, title, content, owner_id) -> PostDTO:
-        return PostDTO(
-            id=self.fake.random_int(),
-            title=title,
-            content=content,
-            created_at=self.fake.date_time(),
-            author=self.fake.name(),
-        )
+    async def delete(self, post_id: int) -> None:
+        pass
+
+    async def list_by_author(self, author_id: int) -> list[PostDTO]:
+        return await self.get_list()
+

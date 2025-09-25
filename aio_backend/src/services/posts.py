@@ -1,14 +1,12 @@
-from src.dto.posts import PostDTO
-from src.repository.posts_repo import FakePostsRepository
+from src.dto.posts import PostDTO, PostCreateDTO
+from src.repository.abstract import AbstractPostRepository
 
 
-async def get_posts_list() -> list[PostDTO]:
-    repo = FakePostsRepository()
-    resp = await repo.get_posts()
+async def get_posts_list(repo: AbstractPostRepository) -> list[PostDTO]:
+    resp = await repo.get_list()
     # Тут можно добавить кеш.
     return resp
 
 
-async def create_post(title: str, content: str, owner_id: int) -> PostDTO:
-    repo = FakePostsRepository()
-    return await repo.create_post(title=title, content=content, owner_id=owner_id)
+async def create_post(repo: AbstractPostRepository, new_post: PostCreateDTO) -> PostDTO:
+    return await repo.create(new_post)

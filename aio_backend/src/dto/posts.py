@@ -15,3 +15,11 @@ class PostDTO:
             return self.content[:100] + "..."
         else:
             return self.content
+
+
+@dataclass(slots=True, kw_only=True)
+class PostCreateDTO:
+    title: str
+    content: str
+    created_at: datetime = field(default_factory=datetime.now)
+    author_id: int

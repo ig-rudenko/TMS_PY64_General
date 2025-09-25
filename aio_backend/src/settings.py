@@ -13,8 +13,11 @@ class CacheType(str, Enum):
 
 class Settings(BaseSettings):
     database_url: str
-
     cache_type: CacheType = CacheType.MEMORY  # 'redis' or 'memory'
+
+    jwt_secret: str
+    access_exp_min: int
+    refresh_exp_days: int
 
     class Config:
         env_file = ".env"
