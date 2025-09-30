@@ -8,6 +8,9 @@ class UserDTO:
     password: str
     first_name: str
     last_name: str
+    is_active: bool = True
+    is_superuser: bool = False
+    is_staff: bool = False
 
 
 @dataclass(slots=True, kw_only=True, frozen=True)

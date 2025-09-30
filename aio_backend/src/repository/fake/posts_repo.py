@@ -27,7 +27,7 @@ class FakePostsRepository(AbstractPostRepository):
             author=self.fake.name(),
         )
 
-    async def get_list(self, search: str = "") -> list[PostDTO]:
+    async def get_list(self, page: int, page_size: int, search: str = "") -> list[PostDTO]:
         return [
             PostDTO(
                 id=i,
@@ -44,7 +44,3 @@ class FakePostsRepository(AbstractPostRepository):
 
     async def delete(self, post_id: int) -> None:
         pass
-
-    async def list_by_author(self, author_id: int) -> list[PostDTO]:
-        return await self.get_list()
-

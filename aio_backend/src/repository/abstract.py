@@ -7,22 +7,27 @@ from src.dto.users import UserDTO
 class AbstractPostRepository(ABC):
 
     @abstractmethod
-    async def get(self, post_id: int) -> PostDTO: ...
+    async def get(self, post_id: int) -> PostDTO:
+        """
+        Возвращает пост по id
+
+        Args:
+            post_id (int): id поста
+        Raises:
+            ObjectNotFound: если пост не найден.
+        """
 
     @abstractmethod
     async def create(self, instance: PostCreateDTO) -> PostDTO: ...
 
     @abstractmethod
-    async def get_list(self, search: str = "") -> list[PostDTO]: ...
+    async def get_list(self, page: int, page_size: int, search: str = "") -> list[PostDTO]: ...
 
     @abstractmethod
     async def update(self, instance: PostDTO) -> PostDTO: ...
 
     @abstractmethod
     async def delete(self, post_id: int) -> None: ...
-
-    @abstractmethod
-    async def list_by_author(self, author_id: int) -> list[PostDTO]: ...
 
 
 class AbstractUserRepository(ABC):

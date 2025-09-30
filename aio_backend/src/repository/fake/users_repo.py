@@ -1,7 +1,7 @@
 from faker import Faker
 
-from .abstract import AbstractUserRepository
-from ..dto.users import UserDTO
+from src.repository.abstract import AbstractUserRepository
+from src.dto.users import UserDTO
 
 
 class FakeUsersRepository(AbstractUserRepository):
