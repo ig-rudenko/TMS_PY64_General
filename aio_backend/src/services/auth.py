@@ -1,9 +1,9 @@
 from passlib.context import CryptContext
 
-from .token_service import JWTokenService, JWTokenPair
-from ..dto.users import UserLoginDTO, UserDTO
+from ..dto.users import UserDTO, UserLoginDTO
 from ..exceptions import AuthenticationError
 from ..repository.abstract import AbstractUserRepository
+from .token_service import JWTokenPair, JWTokenService
 
 __context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

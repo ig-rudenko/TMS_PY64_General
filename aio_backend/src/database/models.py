@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import String, Text, ForeignKey, DateTime
+from sqlalchemy import DateTime, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.base import BaseModel
@@ -33,5 +33,5 @@ class PostModel(BaseModel):
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
 
     user: Mapped["UserModel"] = relationship(
-        "UserModel", lazy="select", back_populates="posts", viewonly=True
+        "UserModel", lazy="selectin", back_populates="posts", viewonly=True
     )

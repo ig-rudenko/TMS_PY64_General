@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.dto.posts import PostDTO, PostCreateDTO
+from src.dto.posts import PostCreateDTO, PostDTO
 from src.dto.users import UserDTO
 
 
@@ -21,7 +21,9 @@ class AbstractPostRepository(ABC):
     async def create(self, instance: PostCreateDTO) -> PostDTO: ...
 
     @abstractmethod
-    async def get_list(self, page: int, page_size: int, search: str = "") -> list[PostDTO]: ...
+    async def get_list(
+        self, page: int, page_size: int, search: str = "", author_username: str = ""
+    ) -> tuple[list[PostDTO], int]: ...
 
     @abstractmethod
     async def update(self, instance: PostDTO) -> PostDTO: ...

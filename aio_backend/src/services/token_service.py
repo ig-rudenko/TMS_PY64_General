@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, UTC, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Literal
 
 import jwt
@@ -15,7 +15,7 @@ class JWTokenPair:
 
 
 class Payload(BaseModel):
-    sub: int  # user id
+    sub: str  # user id
     type: Literal["access", "refresh"]
     iat: int  # Время создания
     exp: int  # Время истечения
@@ -38,11 +38,11 @@ class JWTokenService:
 
     def get_user_id(self, token: str) -> int:
         payload = self._validate_token(token, "access")
-        return payload.sub
+        return int(payload.sub)
 
     def refresh_token_pair(self, token: str) -> JWTokenPair:
         payload = self._validate_token(token, "refresh")
-        return self.create_token_pair(payload.sub)
+        return self.create_token_pair(int(payload.sub))
 
     def _validate_token(self, token: str, type_: Literal["access", "refresh"]) -> Payload:
         try:
@@ -55,6 +55,8 @@ class JWTokenService:
             raise InvalidTokenError(f"Token type is not {type_}")
         if payload.exp < datetime.now(UTC).timestamp():
             raise InvalidTokenError("Token is expired")
+        if not payload.sub.isdigit():
+            raise InvalidTokenError("User id is not digit string")
         return payload
 
     def _create_token(self, user_id: int, type_: Literal["access", "refresh"]) -> str:
@@ -66,7 +68,7 @@ class JWTokenService:
             exp += timedelta(days=self._refresh_exp_days)
 
         payload = Payload(
-            sub=user_id,
+            sub=str(user_id),
             iat=int(now.timestamp()),
             exp=int(exp.timestamp()),
             type=type_,

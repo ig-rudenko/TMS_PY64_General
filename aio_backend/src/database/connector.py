@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 
 class DatabaseConnector:
@@ -29,10 +29,13 @@ class DatabaseConnector:
         async with self._session_maker() as session:
             try:
                 yield session  # Возвращаем сессию и работаем с ней до выхода из контекста. Ожидаем завершения.
-            except Exception:
+            except Exception as exc:
+                print("Error occurred!", exc)
+                print("Rolling back...")
                 await session.rollback()  # В случае ошибки откатываем все изменения в БД для данной сессии.
                 raise
             else:
+                print("Committing...")
                 await session.commit()  # Сохраняем изменения в БД.
 
 

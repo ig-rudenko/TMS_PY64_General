@@ -1,6 +1,6 @@
 from faker import Faker
 
-from src.dto.posts import PostDTO, PostCreateDTO
+from src.dto.posts import PostCreateDTO, PostDTO
 from src.repository.abstract import AbstractPostRepository
 
 

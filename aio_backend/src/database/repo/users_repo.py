@@ -1,9 +1,11 @@
+from typing import Any
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import UserModel
 from src.dto.users import UserDTO
-from src.exceptions import ObjectNotFound
+from src.exceptions import ObjectNotFound, RepositoryError
 from src.repository.abstract import AbstractUserRepository
 
 
@@ -13,15 +15,20 @@ class SqlAlchemyUsersRepository(AbstractUserRepository):
         self.session = session
 
     async def get(self, user_id: int) -> UserDTO:
-        query = select(UserModel).where(UserModel.id == user_id)
+        return await self._get_by("id", user_id)
+
+    async def get_by_username(self, username: str) -> UserDTO:
+        return await self._get_by("username", username)
+
+    async def _get_by(self, field: str, value: Any) -> UserDTO:
+        if not hasattr(UserModel, field):
+            raise RepositoryError("Invalid search method")
+        query = select(UserModel).where(getattr(UserModel, field) == value)  # noqa
         result = await self.session.execute(query)
         user = result.scalar_one_or_none()
         if user is None:
-            raise ObjectNotFound(f"User not found")
+            raise ObjectNotFound("User not found")
         return self._to_dto(user)
-
-    async def get_by_username(self, username: str) -> UserDTO:
-        pass
 
     async def create(self, instance: UserDTO) -> UserDTO:
         model = UserModel(

@@ -14,10 +14,38 @@ dependencies = [
     "pydantic[email]>=2.11.9",
     "pyjwt>=2.10.1",
     "sqlalchemy>=2.0.43",
-    "uvicorn>=0.37.0",
+    "uvicorn[standard]>=0.37.0",
 ]
 
 [dependency-groups]
 dev = [
     "faker>=37.8.0",
+]
+
+[tool.ruff]
+line-length = 120
+lint.flake8-bugbear.extend-immutable-calls = ["Depends", "fastapi.Depends", "fastapi.params.Depends"]
+lint.extend-select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+]
+lint.ignore = [
+    # Line too long
+    "E501",
+    # Functions with a high complexity
+    "C901",
+    # Use ternary operator instead of `if`-`else`-block
+    "SIM108",
+    # Module level import not at top of file
+    "E402"
 ]

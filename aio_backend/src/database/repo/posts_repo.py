@@ -1,8 +1,8 @@
-from sqlalchemy import select, or_, delete, update
+from sqlalchemy import delete, or_, select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import PostModel, UserModel
-from src.dto.posts import PostDTO, PostCreateDTO
+from src.dto.posts import PostCreateDTO, PostDTO
 from src.exceptions import ObjectNotFound
 from src.repository.abstract import AbstractPostRepository
 
@@ -26,16 +26,24 @@ class SqlAlchemyPostRepository(AbstractPostRepository):
             content=instance.content,
             user_id=instance.author_id,
         )
+        print("Добавляем объект в сессию (add):")
         self.session.add(post)  # Добавляем объект в сессию.
+        print("Отправляем изменения в БД (flush):")
         await self.session.flush()  # Передаём изменения в БД для текущей сессии.
+        print("Обновляем объект (refresh):")
         await self.session.refresh(post)  # Обновляем объект, чтобы получить id.
         return self._to_dto(post)
 
     async def get_list(
         self, page: int, page_size: int, search: str = "", author_username: str = ""
-    ) -> list[PostDTO]:
+    ) -> tuple[list[PostDTO], int]:
         offset = (page - 1) * page_size
-        query = select(PostModel).order_by(PostModel.created_at.desc()).limit(page_size).offset(offset)
+        query = (
+            select(func.count(), PostModel)
+            .order_by(PostModel.created_at.desc())
+            .limit(page_size)
+            .offset(offset)
+        )
 
         if search:
             query = query.where(
@@ -52,10 +60,13 @@ class SqlAlchemyPostRepository(AbstractPostRepository):
         result = await self.session.execute(query)
 
         posts = []
-        for post in result.scalars():
+        total_count = 0
+        for count, post in result:
+            if not total_count:
+                total_count = count
             posts.append(self._to_dto(post))
 
-        return posts
+        return posts, count
 
     async def update(self, instance: PostDTO) -> PostDTO:
         query = (
@@ -79,6 +90,7 @@ class SqlAlchemyPostRepository(AbstractPostRepository):
 
     @staticmethod
     def _to_dto(post: PostModel) -> PostDTO:
+        print("Преобразуем объект в DTO:")
         return PostDTO(
             id=post.id,
             title=post.title,
