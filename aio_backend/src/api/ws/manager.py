@@ -1,7 +1,7 @@
 from fastapi import WebSocket
 from pydantic import ValidationError
 
-from src.dto.ws import WSMessageDTO
+from src.dto.messages import MessageDTO
 
 
 class WSConnectionManager:
@@ -25,18 +25,18 @@ class WSConnectionManager:
             # Если соединение есть, то удаляем его.
             try:
                 self._connections[user_id].remove(websocket)
-            except ValueError:
+            except (ValueError, KeyError):
                 pass
 
     @staticmethod
-    async def parse_message(data: str) -> WSMessageDTO | None:
+    async def parse_message(data: str) -> MessageDTO | None:
         try:
-            msg = WSMessageDTO.model_validate_json(data)
+            msg = MessageDTO.model_validate_json(data)
             return msg
         except ValidationError as exc:
             print(exc)
 
-    async def send_message(self, user_id: int, message: WSMessageDTO):
+    async def send_message(self, user_id: int, message: MessageDTO):
         for ws in self._connections.get(user_id, []):
             if ws:
                 await ws.send_text(message.model_dump_json())

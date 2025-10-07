@@ -12,3 +12,6 @@ class RepositoryError(Exception):
 
 class ObjectNotFound(RepositoryError):
     """Объект не найден в репозитории"""
+
+
+class UniqueConstraintError(RepositoryError): ...

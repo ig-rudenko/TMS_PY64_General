@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.dto.posts import PostCreateDTO, PostDTO
 from src.dto.users import UserDTO
+from src.dto.messages import MessageDTO, MessageFilterDTO
 
 
 class AbstractPostRepository(ABC):
@@ -45,3 +46,21 @@ class AbstractUserRepository(ABC):
 
     @abstractmethod
     async def update(self, instance: UserDTO) -> UserDTO: ...
+
+
+class AbstractMessageRepository(ABC):
+
+    @abstractmethod
+    async def get(self, msg_id: int) -> MessageDTO: ...
+
+    @abstractmethod
+    async def filter_messages(self, filter_: MessageFilterDTO) -> list[MessageDTO]: ...
+
+    @abstractmethod
+    async def create(self, instance: MessageDTO) -> MessageDTO: ...
+
+    @abstractmethod
+    async def update(self, instance: MessageDTO) -> MessageDTO: ...
+
+    @abstractmethod
+    async def delete(self, msg_id: int) -> None: ...

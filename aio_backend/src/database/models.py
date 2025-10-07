@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy import DateTime, ForeignKey, String, Text, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database.base import BaseModel
+from src.dto.messages import MessageType
 
 
 class UserModel(BaseModel):
@@ -34,4 +35,20 @@ class PostModel(BaseModel):
 
     user: Mapped["UserModel"] = relationship(
         "UserModel", lazy="selectin", back_populates="posts", viewonly=True
+    )
+
+
+class MessageModel(BaseModel):
+    __tablename__ = "messages"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sender_id: Mapped[int]
+    recipient_id: Mapped[int]
+    message: Mapped[str] = mapped_column(String(4096))
+    type: Mapped[MessageType] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+
+    __table_args__ = (
+        Index("idx_sender_id", "sender_id"),
+        Index("idx_recipient_id", "recipient_id"),
     )

@@ -3,6 +3,7 @@ from typing import Any
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.database.base import exception_handler
 from src.database.models import UserModel
 from src.dto.users import UserDTO
 from src.exceptions import ObjectNotFound, RepositoryError
@@ -41,7 +42,10 @@ class SqlAlchemyUsersRepository(AbstractUserRepository):
             is_staff=instance.is_staff,
         )
         self.session.add(model)
-        await self.session.flush()
+        try:
+            await self.session.flush()
+        except Exception as exc:
+            exception_handler(exc)
         await self.session.refresh(model)
         return self._to_dto(model)
 
