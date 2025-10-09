@@ -1,5 +1,6 @@
 import re
 from collections.abc import AsyncIterator
+from functools import cache
 
 from fastapi import Depends, Header, HTTPException, WebSocket
 from fastapi.security import OAuth2PasswordBearer
@@ -12,8 +13,11 @@ from src.database.repo.users_repo import SqlAlchemyUsersRepository
 from src.dto.users import UserDTO
 from src.exceptions import InvalidTokenError, ObjectNotFound
 from src.repository.abstract import AbstractPostRepository, AbstractUserRepository, AbstractMessageRepository
+from src.services.cache.base import AbstractCache
+from src.services.cache.redis import RedisCache
+from src.services.cache.services import UserCacheService
 from src.services.token_service import JWTokenService
-from src.settings import settings
+from src.settings import settings, CacheType
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
@@ -43,21 +47,39 @@ def get_message_repo(session: AsyncSession = Depends(get_session)) -> AbstractMe
     return SqlAlchemyMessageRepository(session)
 
 
+@cache
+def get_cache() -> AbstractCache:
+    if settings.cache_type == CacheType.REDIS:
+        return RedisCache(url=settings.cache_url, max_connections=settings.cache_max_connections)
+    raise ValueError(f"Set Cache to Redis")
+
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
     user_repo: AbstractUserRepository = Depends(get_users_repo, use_cache=True),
     token_service: JWTokenService = Depends(get_token_service),
+    cache: AbstractCache = Depends(get_cache),
 ) -> UserDTO:
     try:
         user_id = token_service.get_user_id(token)
     except InvalidTokenError as exc:
         raise HTTPException(detail=str(exc), status_code=401) from exc
+
+    user_cache_service = UserCacheService(cache, cache_ttl=settings.access_exp_min * 60)
+    user = await user_cache_service.get_user(user_id)
+    if user is not None:
+        return user
+
     try:
         user = await user_repo.get(user_id)
     except ObjectNotFound as exc:
         raise HTTPException(detail="User not found", status_code=401) from exc
+
+    await user_cache_service.set_user(user_id, user)  # Добавляем в кэш пользователя.
+
     if not user.is_active:
         raise HTTPException(detail=f"User {user.username} is not active", status_code=401)
+
     return user
 
 

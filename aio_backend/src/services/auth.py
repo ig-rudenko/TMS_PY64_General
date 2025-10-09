@@ -1,5 +1,7 @@
 from passlib.context import CryptContext
 
+from .cache.base import AbstractCache
+from .cache.services import UserCacheService
 from ..dto.users import UserDTO, UserLoginDTO
 from ..exceptions import AuthenticationError
 from ..repository.abstract import AbstractUserRepository
@@ -26,6 +28,17 @@ async def login_user(
     return token_service.create_token_pair(user.id)
 
 
-async def register_user(repo: AbstractUserRepository, data: UserDTO) -> UserDTO:
+async def register_user(repo: AbstractUserRepository, data: UserDTO, cache: AbstractCache) -> UserDTO:
     data.password = get_password_hash(data.password)
-    return await repo.create(data)
+    user = await repo.create(data)
+    user_cache_service = UserCacheService(cache)
+    await user_cache_service.set_user(user.id, user)
+    return user
+
+
+async def update_user(repo: AbstractUserRepository, user_data: UserDTO, cache: AbstractCache) -> UserDTO:
+    user = await repo.update(user_data)
+
+    user_cache_service = UserCacheService(cache)
+    await user_cache_service.delete_user(user.id)
+    return user
