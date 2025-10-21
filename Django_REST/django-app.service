@@ -3,10 +3,10 @@ Description=Test Django app
 After=network.target
 
 [Service]
-WorkingDirectory=/opt/TMS_PY64_General/'Django REST'/
-EnvironmentFile=/opt/TMS_PY64_General/'Django REST'/.env
+WorkingDirectory=/opt/TMS_PY64_General/Django_REST/
+EnvironmentFile=/opt/TMS_PY64_General/Django_REST/.env
 
-ExecStart=/opt/TMS_PY64_General/'Django REST'/.venv/bin/gunicorn -w 2 project.wsgi:application
+ExecStart=/opt/TMS_PY64_General/Django_REST/.venv/bin/gunicorn -w 2 project.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
