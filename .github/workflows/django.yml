@@ -27,9 +27,9 @@ jobs:
       db:
         image: postgres:alpine
         env:
-          DB_NAME: db_django
-          DB_USER: django
-          DB_PASSWORD: password
+          POSTGRES_DB: db_django
+          POSTGRES_USER: django
+          POSTGRES_PASSWORD: password
         ports:
           - "5432:5432"
 
