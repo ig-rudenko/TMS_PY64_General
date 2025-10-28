@@ -1,0 +1,60 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 2
+      matrix:
+        python-version: ["3.13"]
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
+      DB_NAME: db_django
+      DB_USER: django
+      DB_PASSWORD: password
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      REDIS_URL: redis://127.0.0.1:6379/0
+
+    services:
+      cache:
+        image: redis:alpine
+        ports:
+          - "6379:6379"
+
+      db:
+        image: postgres:alpine
+        env:
+          POSTGRES_DB: db_django
+          POSTGRES_USER: django
+          POSTGRES_PASSWORD: password
+        ports:
+          - "5432:5432"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        enable-cache: true
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+
+    - name: Install requirements
+      run: |
+        cd Django_REST
+        uv sync --locked --all-extras --dev
+
+    - name: Run Tests
+      run: |
+        cd Django_REST
+        uv run python manage.py test
