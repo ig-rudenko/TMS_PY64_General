@@ -15,11 +15,23 @@ jobs:
         python-version: ["3.13"]
     env:
       UV_PYTHON: ${{ matrix.python-version }}
+      DB_NAME: db_django
+      DB_USERL: django
+      DB_PASSWORD: password
+
     services:
-      db:
-        image: redis:latest
+      cache:
+        image: redis:alpine
         ports:
           - "6379:6379"
+      db:
+        image: postgres:alpine
+        env:
+          DB_NAME: db_django
+          DB_USER: django
+          DB_PASSWORD: password
+        ports:
+          - "5432:5432"
 
     steps:
     - uses: actions/checkout@v4
