@@ -16,7 +16,7 @@ jobs:
     env:
       UV_PYTHON: ${{ matrix.python-version }}
       DB_NAME: db_django
-      DB_USERL: django
+      DB_USER: django
       DB_PASSWORD: password
 
     services:
