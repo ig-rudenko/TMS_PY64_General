@@ -18,20 +18,20 @@ jobs:
       DB_NAME: db_django
       DB_USER: django
       DB_PASSWORD: password
+      DB_HOST: db
+      DB_PORT: 5432
+      REDIS_URL: redis://cache:6379/0
 
     services:
       cache:
         image: redis:alpine
-        ports:
-          - "6379:6379"
+
       db:
         image: postgres:alpine
         env:
           POSTGRES_DB: db_django
           POSTGRES_USER: django
           POSTGRES_PASSWORD: password
-        ports:
-          - "5432:5432"
 
     steps:
     - uses: actions/checkout@v4
