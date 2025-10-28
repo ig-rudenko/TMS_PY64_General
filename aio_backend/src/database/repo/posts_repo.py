@@ -1,4 +1,4 @@
-from sqlalchemy import delete, or_, select, update, func
+from sqlalchemy import delete, or_, select, update, func, over
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import PostModel, UserModel
@@ -39,9 +39,10 @@ class SqlAlchemyPostRepository(AbstractPostRepository):
     ) -> tuple[list[PostDTO], int]:
         offset = (page - 1) * page_size
         query = (
-            select(func.count(), PostModel)
+            select(over(func.count()), PostModel)
             .order_by(PostModel.created_at.desc())
             .limit(page_size)
+            .group_by(PostModel.id)
             .offset(offset)
         )
 
@@ -66,7 +67,7 @@ class SqlAlchemyPostRepository(AbstractPostRepository):
                 total_count = count
             posts.append(self._to_dto(post))
 
-        return posts, count
+        return posts, total_count
 
     async def update(self, instance: PostDTO) -> PostDTO:
         query = (

@@ -1,0 +1,56 @@
+services:
+
+  web-server:
+    restart: always
+    image: nginx:1.29.2-alpine
+    mem_limit: 64m
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/conf.d/default.conf"
+    depends_on:
+      - backend-1
+      - backend-2
+
+  backend-1: &backend
+    restart: always
+    build: .
+    image: aiobackend:0.1
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    mem_limit: 256m
+    environment:
+      DATABASE_URL: postgresql+asyncpg://dbuser:${POSTGRES_PASSWORD}@database:5432/dbname
+      JWT_SECRET: ${JWT_SECRET}
+      ACCESS_EXP_MIN: ${ACCESS_EXP_MIN:-5}
+      REFRESH_EXP_DAYS: ${REFRESH_EXP_DAYS:-30}
+      CACHE_TYPE: redis
+      CACHE_URL: redis://cache:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+      - cache
+
+  backend-2:
+    <<: *backend
+    ports: []
+
+  backend-3:
+    <<: *backend
+    ports: []
+
+  database:
+    restart: always
+    image: postgres:18-alpine
+    mem_limit: 512m
+    environment:
+      POSTGRES_USER: dbuser
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: dbname
+    volumes:
+      - "./compose/database:/var/lib/postgresql/18/docker"
+
+  cache:
+    restart: always
+    mem_limit: 128m
+    image: redis:8.2.2-alpine

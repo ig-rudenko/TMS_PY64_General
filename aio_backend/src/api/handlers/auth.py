@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from src.api.depends import get_token_service, get_users_repo, get_cache
 from src.api.schemas.auth import LoginSchema, RegisterSchema, TokenPairSchema, UserSchema
 from src.dto.users import UserDTO, UserLoginDTO
-from src.exceptions import UniqueConstraintError
+from src.exceptions import UniqueConstraintError, ObjectNotFound
 from src.repository.abstract import AbstractUserRepository
 from src.services.auth import login_user, register_user
 from src.services.cache.base import AbstractCache
@@ -18,7 +18,12 @@ async def get_token_pair_api_view(
     repo: AbstractUserRepository = Depends(get_users_repo),
     token_service: JWTokenService = Depends(get_token_service),
 ):
-    return await login_user(repo, token_service, UserLoginDTO(username=data.username, password=data.password))
+    try:
+        return await login_user(
+            repo, token_service, UserLoginDTO(username=data.username, password=data.password)
+        )
+    except ObjectNotFound as exc:
+        raise HTTPException(detail="Неправильный логин или пароль", status_code=401) from exc
 
 
 @router.post("/register", response_model=UserSchema, status_code=201)

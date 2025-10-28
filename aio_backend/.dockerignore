@@ -1,0 +1,12 @@
+*
+!src
+!main.py
+!requirements.txt
+!alembic.ini
+!pyproject.toml
+!uv.lock
+
+# Byte-compiled / optimized / DLL files
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
