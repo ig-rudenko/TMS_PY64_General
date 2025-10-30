@@ -12,12 +12,12 @@ from src.database.repo.posts_repo import SqlAlchemyPostRepository
 from src.database.repo.users_repo import SqlAlchemyUsersRepository
 from src.dto.users import UserDTO
 from src.exceptions import InvalidTokenError, ObjectNotFound
-from src.repository.abstract import AbstractPostRepository, AbstractUserRepository, AbstractMessageRepository
+from src.repository.abstract import AbstractMessageRepository, AbstractPostRepository, AbstractUserRepository
 from src.services.cache.base import AbstractCache
 from src.services.cache.redis import RedisCache
 from src.services.cache.services import UserCacheService
 from src.services.token_service import JWTokenService
-from src.settings import settings, CacheType
+from src.settings import CacheType, settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
@@ -51,7 +51,7 @@ def get_message_repo(session: AsyncSession = Depends(get_session)) -> AbstractMe
 def get_cache() -> AbstractCache:
     if settings.cache_type == CacheType.REDIS:
         return RedisCache(url=settings.cache_url, max_connections=settings.cache_max_connections)
-    raise ValueError(f"Set Cache to Redis")
+    raise ValueError("Set Cache to Redis")
 
 
 async def get_current_user(
@@ -78,7 +78,10 @@ async def get_current_user(
     await user_cache_service.set_user(user_id, user)  # Добавляем в кэш пользователя.
 
     if not user.is_active:
-        raise HTTPException(detail=f"User {user.username} is not active", status_code=401)
+        raise HTTPException(
+            detail=f"User {user.username} is not active ghsjdkfhgjkhsjkdfh klsghldf kjhkglsj dhlkfjgh klsjdhf klgjhsdklfjh glksjhdfkljg hksldhfjklg hsjkldhf klhskldf hklh ",
+            status_code=401,
+        )
 
     return user
 

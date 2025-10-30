@@ -1,9 +1,9 @@
 from fastapi import WebSocket, WebSocketDisconnect
 
 from src.api.depends import get_message_repo
+from src.api.ws.manager import ws_manager
 from src.database.connector import db_connector
 from src.dto.users import UserDTO
-from src.api.ws.manager import ws_manager
 from src.services.messages import process_new_message
 
 

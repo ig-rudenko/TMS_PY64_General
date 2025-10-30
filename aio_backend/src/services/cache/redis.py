@@ -1,5 +1,5 @@
-from typing import Any
 import pickle
+from typing import Any
 
 from redis.asyncio import ConnectionPool, Redis
 

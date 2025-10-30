@@ -49,7 +49,7 @@ class SqlAlchemyUsersRepository(AbstractUserRepository):
         await self.session.refresh(model)
         return self._to_dto(model)
 
-    async def update(self, instance: UserDTO) -> UserDTO:
+    async def update(self, instance: UserDTO) -> UserDTO:  # type: ignore
         pass
 
     @staticmethod

@@ -27,8 +27,10 @@ class FakePostsRepository(AbstractPostRepository):
             author=self.fake.name(),
         )
 
-    async def get_list(self, page: int, page_size: int, search: str = "") -> list[PostDTO]:
-        return [
+    async def get_list(
+        self, page: int, page_size: int, search: str = "", author_username: str = ""
+    ) -> tuple[list[PostDTO], int]:
+        posts = [
             PostDTO(
                 id=i,
                 title=self.fake.sentence(),
@@ -38,6 +40,7 @@ class FakePostsRepository(AbstractPostRepository):
             )
             for i in range(20)
         ]
+        return posts, 20
 
     async def update(self, instance: PostDTO) -> PostDTO:
         return instance

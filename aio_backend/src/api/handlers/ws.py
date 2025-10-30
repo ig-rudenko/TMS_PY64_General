@@ -1,9 +1,8 @@
-from fastapi import APIRouter, WebSocket, Depends
+from fastapi import APIRouter, Depends, WebSocket
 
-from src.api.depends import get_user_and_websocket, get_message_repo
-from src.dto.users import UserDTO
+from src.api.depends import get_user_and_websocket
 from src.api.ws.chat import process_ws_connection
-from src.repository.abstract import AbstractMessageRepository
+from src.dto.users import UserDTO
 
 router = APIRouter(prefix="/ws", tags=["websocket"])
 

@@ -1,10 +1,10 @@
 from passlib.context import CryptContext
 
-from .cache.base import AbstractCache
-from .cache.services import UserCacheService
 from ..dto.users import UserDTO, UserLoginDTO
 from ..exceptions import AuthenticationError
 from ..repository.abstract import AbstractUserRepository
+from .cache.base import AbstractCache
+from .cache.services import UserCacheService
 from .token_service import JWTokenPair, JWTokenService
 
 __context = CryptContext(schemes=["bcrypt"], deprecated="auto")

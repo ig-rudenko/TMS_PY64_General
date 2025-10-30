@@ -1,3 +1,5 @@
+import contextlib
+
 from fastapi import WebSocket
 from pydantic import ValidationError
 
@@ -6,7 +8,7 @@ from src.dto.messages import MessageDTO
 
 class WSConnectionManager:
 
-    def __init__(self):
+    def __init__(self) -> None:
         # За идентификатором пользователя закрепляются все его соединения.
         self._connections: dict[int, list[WebSocket]] = {}
 
@@ -23,10 +25,8 @@ class WSConnectionManager:
     def remove_connection(self, user_id: int, websocket: WebSocket):
         if user_id in self._connections:
             # Если соединение есть, то удаляем его.
-            try:
+            with contextlib.suppress(ValueError, KeyError):
                 self._connections[user_id].remove(websocket)
-            except (ValueError, KeyError):
-                pass
 
     @staticmethod
     async def parse_message(data: str) -> MessageDTO | None:
@@ -35,6 +35,7 @@ class WSConnectionManager:
             return msg
         except ValidationError as exc:
             print(exc)
+        return None
 
     async def send_message(self, user_id: int, message: MessageDTO):
         for ws in self._connections.get(user_id, []):

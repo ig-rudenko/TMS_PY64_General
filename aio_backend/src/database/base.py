@@ -12,9 +12,9 @@ class BaseModel(DeclarativeBase):
 
 
 def exception_handler(exc: Exception) -> Never:
-    if isinstance(exc, IntegrityError):
-        if "UNIQUE constraint failed" in str(exc):
-            filed_match = re.search(r"UNIQUE constraint failed: users\.(\S+)", str(exc))
+    if isinstance(exc, IntegrityError) and "UNIQUE constraint failed" in str(exc):
+        filed_match = re.search(r"UNIQUE constraint failed: users\.(\S+)", str(exc))
+        if filed_match is not None:
             raise UniqueConstraintError(
                 f"Unique constraint failed in field: `{filed_match.group(1)}`"
             ) from exc

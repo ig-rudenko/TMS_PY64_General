@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, HTTPException
+from fastapi import APIRouter, Depends, Query
 
 from src.api.depends import get_current_user, get_posts_repo
 from src.api.schemas.posts import CreatePostSchema, PostsListResponseSchema, ReadPostSchema

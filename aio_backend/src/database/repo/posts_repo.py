@@ -1,4 +1,4 @@
-from sqlalchemy import delete, or_, select, update, func, over
+from sqlalchemy import delete, func, or_, over, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.models import PostModel, UserModel

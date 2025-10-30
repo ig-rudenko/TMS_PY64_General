@@ -26,8 +26,8 @@ class FakeUsersRepository(AbstractUserRepository):
             last_name=self.fake.last_name(),
         )
 
-    async def create(self, instance: UserDTO) -> UserDTO:
+    async def create(self, instance: UserDTO) -> UserDTO:  # type: ignore
         pass
 
-    async def update(self, instance: UserDTO) -> UserDTO:
+    async def update(self, instance: UserDTO) -> UserDTO:  # type: ignore
         pass

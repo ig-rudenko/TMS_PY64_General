@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from src.api.depends import get_token_service, get_users_repo, get_cache
+from src.api.depends import get_cache, get_token_service, get_users_repo
 from src.api.schemas.auth import LoginSchema, RegisterSchema, TokenPairSchema, UserSchema
 from src.dto.users import UserDTO, UserLoginDTO
-from src.exceptions import UniqueConstraintError, ObjectNotFound
+from src.exceptions import ObjectNotFound, UniqueConstraintError
 from src.repository.abstract import AbstractUserRepository
 from src.services.auth import login_user, register_user
 from src.services.cache.base import AbstractCache

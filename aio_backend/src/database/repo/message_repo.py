@@ -21,7 +21,7 @@ class SqlAlchemyMessageRepository(AbstractMessageRepository):
         return self._to_dto(post)
 
     async def filter_messages(self, filter_: MessageFilterDTO) -> list[MessageDTO]:
-        pass
+        return []
 
     async def create(self, instance: MessageDTO) -> MessageDTO:
         msg = self._to_model(instance)
@@ -30,10 +30,10 @@ class SqlAlchemyMessageRepository(AbstractMessageRepository):
         await self.session.refresh(msg)  # Обновляем объект, чтобы получить id.
         return self._to_dto(msg)
 
-    async def update(self, instance: MessageDTO) -> MessageDTO:
+    async def update(self, instance: MessageDTO) -> MessageDTO:  # type: ignore
         pass
 
-    async def delete(self, msg_id: int) -> None:
+    async def delete(self, msg_id: int) -> None:  # type: ignore
         pass
 
     @staticmethod

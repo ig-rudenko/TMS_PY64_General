@@ -15,17 +15,23 @@ dependencies = [
     "pydantic[email]>=2.11.9",
     "pyjwt>=2.10.1",
     "redis>=6.4.0",
-    "sqlalchemy>=2.0.43",
+    "sqlalchemy[mypy]>=2.0.43",
     "uvicorn[standard]>=0.37.0",
 ]
 
 [dependency-groups]
 dev = [
+    "black>=25.9.0",
     "faker>=37.8.0",
+    "types-passlib>=1.7.7.20250602",
 ]
 
+[tool.mypy]
+plugins = "sqlalchemy.ext.mypy.plugin"
+
+
 [tool.ruff]
-line-length = 120
+line-length = 110
 lint.flake8-bugbear.extend-immutable-calls = ["Depends", "fastapi.Depends", "fastapi.params.Depends"]
 lint.extend-select = [
     # pycodestyle

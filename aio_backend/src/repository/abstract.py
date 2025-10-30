@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 
+from src.dto.messages import MessageDTO, MessageFilterDTO
 from src.dto.posts import PostCreateDTO, PostDTO
 from src.dto.users import UserDTO
-from src.dto.messages import MessageDTO, MessageFilterDTO
 
 
 class AbstractPostRepository(ABC):
